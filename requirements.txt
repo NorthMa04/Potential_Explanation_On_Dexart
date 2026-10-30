@@ -1,0 +1,6 @@
+# Use the existing MachineLearning conda environment. Tkinter is bundled with it.
+numpy>=2.0
+matplotlib>=3.9
+# pandas, scipy and scikit-learn are not required by steps 1/2 of this viewer.
+# Step 3 additionally uses the already-installed PyTorch in MachineLearning.
+# Keep the existing CUDA build; do not reinstall torch for steps 1/2.
