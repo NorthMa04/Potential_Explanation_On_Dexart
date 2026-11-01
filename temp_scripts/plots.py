@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import rcParams
 from matplotlib.colors import ListedColormap
 
-from data_access import CONTACT_LABELS, EVENT_LABELS
+from temp_scripts.data_access import CONTACT_LABELS, EVENT_LABELS
 
 COLORS = {"blue": "#2563a6", "orange": "#b95c08", "green": "#16806a", "red": "#b63c51", "purple": "#7758a6", "muted": "#66758a"}
 KEY_EVENTS = {"first_near", "first_any_contact", "first_strict_contact", "first_clear_opening", "first_success", "episode_end"}

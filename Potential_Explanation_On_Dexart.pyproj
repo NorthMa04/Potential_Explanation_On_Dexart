@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>84c5ed31-348c-4b21-b5a5-01a6a95c573f</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Potential_Explanation_On_Dexart.py</StartupFile>
+    <StartupFile>1_review_trajectories.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -22,32 +22,48 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Potential_Explanation_On_Dexart.py" />
-    <Compile Include="project_paths.py" />
-    <Compile Include="data_access.py" />
-    <Compile Include="plots.py" />
-    <Compile Include="export_results.py" />
-    <Compile Include="trajectory_app.py" />
-    <Compile Include="information_table.py" />
-    <Compile Include="build_information_table.py" />
-    <Compile Include="query_information_table.py" />
-    <Compile Include="actor_model.py" />
-    <Compile Include="actor_verification.py" />
-    <Compile Include="actor_verification_plots.py" />
-    <Compile Include="actor_verification_viewer.py" />
-    <Compile Include="verify_actor_forward.py" />
+    <Compile Include="1_review_trajectories.py" />
+    <Compile Include="temp_scripts\__init__.py" />
+    <Compile Include="temp_scripts\project_paths.py" />
+    <Compile Include="temp_scripts\data_access.py" />
+    <Compile Include="temp_scripts\plots.py" />
+    <Compile Include="temp_scripts\export_results.py" />
+    <Compile Include="temp_scripts\trajectory_app.py" />
+    <Compile Include="temp_scripts\information_table.py" />
+    <Compile Include="2_build_information_table.py" />
+    <Compile Include="2_query_information_table.py" />
+    <Compile Include="temp_scripts\information_queries.py" />
+    <Compile Include="temp_scripts\actor_model.py" />
+    <Compile Include="temp_scripts\actor_verification.py" />
+    <Compile Include="temp_scripts\actor_verification_plots.py" />
+    <Compile Include="temp_scripts\actor_verification_viewer.py" />
+    <Compile Include="3_verify_actor_forward.py" />
+    <Compile Include="4_run_activation_baseline.py" />
+    <Compile Include="temp_scripts\activation_baseline.py" />
+    <Compile Include="temp_scripts\activation_baseline_plots.py" />
+    <Compile Include="temp_scripts\activation_baseline_viewer.py" />
+    <Compile Include="tests\test_activation_baseline.py" />
+    <Compile Include="5_run_pure_sae.py" />
+    <Compile Include="temp_scripts\sae_model.py" />
+    <Compile Include="temp_scripts\sae_training.py" />
+    <Compile Include="temp_scripts\sae_plots.py" />
+    <Compile Include="temp_scripts\sae_viewer.py" />
+    <Compile Include="tests\test_sae.py" />
     <Compile Include="tests\test_actor_verification.py" />
     <Compile Include="tests\test_information_table.py" />
     <Compile Include="tests\test_workflow.py" />
     <Content Include="README.md" />
     <Content Include="requirements.txt" />
     <Content Include="STEP3_ACTOR_VERIFICATION.md" />
+    <Content Include="STEP4_ACTIVATION_BASELINE.md" />
+    <Content Include="STEP5_PURE_SAE.md" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="CondaEnv|CondaEnv|MachineLearning" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="tests\" />
+    <Folder Include="temp_scripts\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

@@ -8,8 +8,8 @@ from pathlib import Path
 import numpy as np
 from matplotlib.figure import Figure
 
-from project_paths import OUTPUT_ROOT, output_path
-from plots import physical_figure, heatmap_figure, snapshot_figure, spatial_figure, comparison_figure
+from temp_scripts.project_paths import OUTPUT_ROOT, output_path
+from temp_scripts.plots import physical_figure, heatmap_figure, snapshot_figure, spatial_figure, comparison_figure
 
 
 def json_file(path, data):

@@ -8,12 +8,12 @@ import sqlite3
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from project_paths import bootstrap, OUTPUT_ROOT, default_index
+from temp_scripts.project_paths import bootstrap, OUTPUT_ROOT, default_index
 bootstrap()
 import numpy as np
-from data_access import DataRepository
-from information_table import activation_summary, build_table, rows_for_trajectory, VECTOR_COLUMNS
-from query_information_table import query
+from temp_scripts.data_access import DataRepository
+from temp_scripts.information_table import activation_summary, build_table, rows_for_trajectory, VECTOR_COLUMNS
+from temp_scripts.information_queries import query
 
 
 class InformationTableTests(unittest.TestCase):

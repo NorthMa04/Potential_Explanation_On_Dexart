@@ -4,7 +4,8 @@ import os
 from pathlib import Path
 import sys
 
-PROJECT_ROOT = Path(__file__).resolve().parent
+MODULE_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = MODULE_ROOT.parent
 OUTPUT_ROOT = PROJECT_ROOT / "outputs"
 
 
@@ -33,3 +34,9 @@ def output_path(path):
 
 def default_index():
     return PROJECT_ROOT.parents[1] / "research" / "embodied_sae" / "runs" / "laptop_physical_index_v1"
+
+
+def source_path(name):
+    """Resolve an entry/document at project root or a shared implementation module."""
+    candidate = PROJECT_ROOT / name
+    return candidate if candidate.is_file() else MODULE_ROOT / name

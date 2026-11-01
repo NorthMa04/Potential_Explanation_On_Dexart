@@ -9,8 +9,8 @@ import sqlite3
 
 import numpy as np
 
-from data_access import EVENT_LABELS
-from project_paths import OUTPUT_ROOT, output_path
+from temp_scripts.data_access import EVENT_LABELS
+from temp_scripts.project_paths import PROJECT_ROOT, source_path, OUTPUT_ROOT, output_path
 
 TABLE_HOME = OUTPUT_ROOT / "information_table"
 VECTOR_GROUPS = [("h1", "activations", 64), ("h2", "activations_l2", 64),
@@ -315,7 +315,7 @@ def build_table(repo, records=None, destination=None, publish=True):
                     "grain": "one row per (trajectory_id,state_index), including terminal state",
                     "export_scope": "all_trajectories" if len(records) == len(repo.records) else "selected_trajectories",
                     "default_query_roles": ["train", "validation"], "contact_group_order": ["thumb", "index", "middle", "ring", "palm"],
-                    "loader_sha256": file_hash(Path(__file__).with_name("data_access.py")),
+                    "loader_sha256": file_hash(source_path("data_access.py")),
                     "encoder_contract": "h-only encoders choose one activation layer; do not use identity, outcome, event, or future fields as encoder inputs",
                     "top5_contract": "strictly-positive ReLU values ranked by magnitude for browsing; no semantics, importance or causal contribution inferred",
                     "source_sha256_by_trajectory": {r["trajectory_id"]: r["source_sha256"] for r in records}}
@@ -324,10 +324,10 @@ def build_table(repo, records=None, destination=None, publish=True):
         conn.commit()
         dump(folder / "verification.json", report)
         dump(folder / "provenance.json", metadata)
-        for name in ["information_table.py", "build_information_table.py", "query_information_table.py", "data_access.py", "project_paths.py"]:
-            target = output_path(folder / "source_snapshot" / name)
-            target.parent.mkdir(exist_ok=True)
-            shutil.copyfile(Path(__file__).with_name(name), target)
+        for name in ["information_table.py", "2_build_information_table.py", "2_query_information_table.py", "information_queries.py", "data_access.py", "project_paths.py", "__init__.py"]:
+            target = output_path(folder / "source_snapshot" / source_path(name).relative_to(PROJECT_ROOT))
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source_path(name), target)
         with (folder / "field_dictionary.csv").open("w", encoding="utf-8-sig", newline="") as f:
             w = csv.DictWriter(f, fieldnames=list(dictionary[0]))
             w.writeheader()
@@ -340,12 +340,12 @@ def build_table(repo, records=None, destination=None, publish=True):
         pointer = {"directory": str(folder), "database": str(database), "verification": str(folder / "verification.json")}
         dump(TABLE_HOME / "latest.json", pointer)
         relative = folder.relative_to(TABLE_HOME).as_posix()
-        (TABLE_HOME / "README.md").write_text("# 逐状态信息总表\n\n当前版本：%s。主键为轨迹ID + 状态索引；每行一个真实物理状态。\n\n- [摘要表（方便浏览）](%s/states_overview.csv)\n- [完整表（全部338列）](%s/states_full.csv)\n- [SQLite数据库（可重复查询）](%s/state_activation.sqlite)\n- [字段字典](%s/field_dictionary.csv)\n- [对齐与缺失检查](%s/verification.json)\n- [来源与使用约定](%s/README.md)\n\n运行项目根目录的 build_information_table.py 可独立重建；运行 query_information_table.py 可独立查询。默认查询只含train/validation；数据库保留全部固定划分。总表包含终止状态，其缺失激活/动作记为NULL，不能当作零激活。\n" % (folder.name, relative, relative, relative, relative, relative, relative), encoding="utf-8")
+        (TABLE_HOME / "README.md").write_text("# 逐状态信息总表\n\n当前版本：%s。主键为轨迹ID + 状态索引；每行一个真实物理状态。\n\n- [摘要表（方便浏览）](%s/states_overview.csv)\n- [完整表（全部338列）](%s/states_full.csv)\n- [SQLite数据库（可重复查询）](%s/state_activation.sqlite)\n- [字段字典](%s/field_dictionary.csv)\n- [对齐与缺失检查](%s/verification.json)\n- [来源与使用约定](%s/README.md)\n\n运行项目根目录的 2_build_information_table.py 可独立重建；运行 2_query_information_table.py 可独立查询。默认查询只含train/validation；数据库保留全部固定划分。总表包含终止状态，其缺失激活/动作记为NULL，不能当作零激活。\n" % (folder.name, relative, relative, relative, relative, relative, relative), encoding="utf-8")
     return folder, report
 
 
 def latest_database():
     pointer = TABLE_HOME / "latest.json"
     if not pointer.exists():
-        raise FileNotFoundError("先运行 build_information_table.py 生成总表。")
+        raise FileNotFoundError("先运行 2_build_information_table.py 生成总表。")
     return Path(json.loads(pointer.read_text(encoding="utf-8"))["database"])

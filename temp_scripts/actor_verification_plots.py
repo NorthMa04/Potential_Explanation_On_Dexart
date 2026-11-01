@@ -5,8 +5,8 @@ from pathlib import Path
 import numpy as np
 from matplotlib.figure import Figure
 
-from actor_verification import COMPARISONS, load_replayed
-from plots import COLORS
+from temp_scripts.actor_verification import COMPARISONS, load_replayed
+from temp_scripts.plots import COLORS
 
 
 def reference_for(data, comparison):

@@ -4,13 +4,13 @@ sys.dont_write_bytecode = True
 import argparse
 from pathlib import Path
 
-from project_paths import bootstrap, default_index
+from temp_scripts.project_paths import bootstrap, default_index
 bootstrap()
 
 
 def main():
-    from data_access import DataRepository, DEV_ROLES
-    from information_table import build_table
+    from temp_scripts.data_access import DataRepository, DEV_ROLES
+    from temp_scripts.information_table import build_table
     parser = argparse.ArgumentParser(description="生成逐状态信息总表（CSV + SQLite），无需启动可视化窗口")
     parser.add_argument("--index-dir", type=Path, default=default_index())
     parser.add_argument("--development-only", action="store_true", help="仅导出train/validation，默认导出全部固定划分")

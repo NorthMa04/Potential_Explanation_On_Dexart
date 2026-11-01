@@ -6,7 +6,7 @@ from datetime import datetime, timezone, timedelta
 import logging
 from pathlib import Path
 
-from project_paths import bootstrap, default_index, PROJECT_ROOT
+from temp_scripts.project_paths import bootstrap, default_index, PROJECT_ROOT
 bootstrap()
 
 
@@ -27,9 +27,9 @@ def main():
         parser.error("threads must be positive")
     import matplotlib
     matplotlib.use("Agg")
-    from plots import configure_style
+    from temp_scripts.plots import configure_style
     configure_style()
-    from actor_verification import ACTOR_HOME, verify_actor, latest_result
+    from temp_scripts.actor_verification import ACTOR_HOME, verify_actor, latest_result
     log_dir = ACTOR_HOME / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now(timezone(timedelta(hours=8))).strftime("%Y%m%d_%H%M%S_%f")
@@ -41,7 +41,7 @@ def main():
         summary = json.loads((folder / "summary.json").read_text(encoding="utf-8"))
     else:
         import torch
-        from data_access import DataRepository
+        from temp_scripts.data_access import DataRepository
         torch.set_num_threads(args.threads)
         repo = DataRepository(args.index_dir)
         if args.trajectory_id and args.trajectory_id not in repo.by_id:
@@ -60,7 +60,7 @@ def main():
     for row in summary["comparisons"]:
         print("%-10s MAE=%.6g max=%.6g failed=%d" % (row["comparison"], row["mae"], row["max_abs_error"], row["failed_values"]), flush=True)
     if not args.no_gui:
-        from actor_verification_viewer import launch
+        from temp_scripts.actor_verification_viewer import launch
         launch(folder)
     return 0 if summary["status"] == "passed" else 1
 

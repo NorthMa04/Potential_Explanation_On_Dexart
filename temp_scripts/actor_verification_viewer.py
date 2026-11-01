@@ -11,9 +11,9 @@ from matplotlib.figure import Figure
 from matplotlib.image import imread
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
-from actor_verification import COMPARISONS, load_replayed
-from actor_verification_plots import global_figure, trajectory_error_figure, values_figure, error_heatmap_figure, clipping_figure
-from project_paths import output_path
+from temp_scripts.actor_verification import COMPARISONS, load_replayed
+from temp_scripts.actor_verification_plots import global_figure, trajectory_error_figure, values_figure, error_heatmap_figure, clipping_figure
+from temp_scripts.project_paths import output_path
 
 
 class ManagedToolbar(NavigationToolbar2Tk):

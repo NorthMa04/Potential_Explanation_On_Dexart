@@ -4,3 +4,8 @@ matplotlib>=3.9
 # pandas, scipy and scikit-learn are not required by steps 1/2 of this viewer.
 # Step 3 additionally uses the already-installed PyTorch in MachineLearning.
 # Keep the existing CUDA build; do not reinstall torch for steps 1/2.
+# Step 4: already present in MachineLearning; MLP sample weights require >=1.7.
+scikit-learn>=1.7
+joblib>=1.4
+threadpoolctl>=3.5
+# Step 5 reuses the existing torch build; no simulation or new runtime packages.

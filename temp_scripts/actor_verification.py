@@ -9,9 +9,9 @@ import shutil
 import numpy as np
 import torch
 
-from actor_model import load_actor, parameter_fingerprint, replay
-from data_access import ALL_ROLES
-from project_paths import OUTPUT_ROOT, output_path
+from temp_scripts.actor_model import load_actor, parameter_fingerprint, replay
+from temp_scripts.data_access import ALL_ROLES
+from temp_scripts.project_paths import PROJECT_ROOT, source_path, OUTPUT_ROOT, output_path
 
 ACTOR_HOME = OUTPUT_ROOT / "actor_verification"
 COMPARISONS = {
@@ -211,17 +211,20 @@ def verify_actor(repo, checkpoint, *, records=None, device="cpu", batch_size=256
     json_file(folder / "hook_checks.json", hook_checks)
     json_file(folder / "sources.json", source_provenance)
     if figures:
-        from actor_verification_plots import export_figures
+        from temp_scripts.actor_verification_plots import export_figures
         export_figures(folder, summary, plot_bank, repo, records)
     snapshot = folder / "source_snapshot"
     snapshot.mkdir()
-    for name in ["actor_model.py", "actor_verification.py", "actor_verification_plots.py", "actor_verification_viewer.py", "verify_actor_forward.py", "data_access.py", "project_paths.py"]:
-        shutil.copyfile(Path(__file__).with_name(name), snapshot / name)
+    for name in ["actor_model.py", "actor_verification.py", "actor_verification_plots.py", "actor_verification_viewer.py", "3_verify_actor_forward.py", "data_access.py", "project_paths.py", "plots.py", "__init__.py"]:
+        source = source_path(name)
+        target = snapshot / source.relative_to(PROJECT_ROOT)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, target)
     table = "\n".join("| %s | %.3g | %.3g | %d | %s |" % (m["comparison"], m["mae"], m["max_abs_error"], m["failed_values"], m["passed"]) for m in metrics)
     (folder / "README.md").write_text("# Actor 前向复现结果\n\n状态：**%s**；%d 条轨迹、%d 个动作步。另有 %d 个终止状态没有新激活，未参加前向复现。\n\n固定容差：abs(error) <= %.3g + %.3g * abs(reference)。\n\n| 比较 | MAE | 最大绝对误差 | 超差数值 | 通过 |\n| --- | ---: | ---: | ---: | --- |\n%s\n\n- [全局误差图](figures/01_global_errors.png)\n- [重算与记录的散点图](figures/02_replayed_vs_recorded.png)\n- [逐轨迹结果](trajectory_errors.csv)\n- [逐步误差（可按轨迹ID和动作索引关联信息总表）](step_errors.csv)\n- [逐维误差](dimension_errors.csv)\n- [超差位置](mismatches.csv)\n- [终止状态排除记录](terminal_states.csv)\n- [原权重及网络规格](model/model_spec.json)\n\nreplayed/ 中保存每条轨迹的日志参照与重算数组；summary.json 保存全部阈值、版本、来源和总体结论，hook_checks.json 记录每次挂钩数量及中立性检查。全局数值统计使用全部数据；仅散点图确定性抽样，最多每比较5000点。\n\nA 从已存h2开始，B 从已存h1开始，C 从已存融合特征开始；每次运算都向前执行。D 独立验证已存动作均值的裁剪。通过只表明融合特征之后的actor计算忠实，不包含PointNet、仿真或语义/因果证明。\n" % (summary["status"], summary["trajectories"], summary["decision_steps"], len(terminals), atol, rtol, table), encoding="utf-8")
     if publish:
         json_file(ACTOR_HOME / "latest.json", {"directory": str(folder), "status": summary["status"]})
-        (ACTOR_HOME / "README.md").write_text("# 步骤3：冻结Actor前向复现\n\n最近完成的结果：[%s / %s](%s/README.md)。\n\n在项目根目录独立运行 verify_actor_forward.py，默认完成全部数值校验、导出图表后打开结果窗口。加 --no-gui 可只生成文件；加 --view-only 可直接查看最近一次结果。\n" % (folder.name, summary["status"], folder.name), encoding="utf-8")
+        (ACTOR_HOME / "README.md").write_text("# 步骤3：冻结Actor前向复现\n\n最近完成的结果：[%s / %s](%s/README.md)。\n\n在项目根目录独立运行 3_verify_actor_forward.py，默认完成全部数值校验、导出图表后打开结果窗口。加 --no-gui 可只生成文件；加 --view-only 可直接查看最近一次结果。\n" % (folder.name, summary["status"], folder.name), encoding="utf-8")
     return folder, summary
 
 
@@ -233,5 +236,5 @@ def load_replayed(folder, trajectory_id):
 def latest_result():
     pointer = ACTOR_HOME / "latest.json"
     if not pointer.exists():
-        raise FileNotFoundError("先运行 verify_actor_forward.py 完成一次前向复现。")
+        raise FileNotFoundError("先运行 3_verify_actor_forward.py 完成一次前向复现。")
     return Path(json.loads(pointer.read_text(encoding="utf-8"))["directory"])

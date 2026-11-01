@@ -10,10 +10,10 @@ import numpy as np
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
-from data_access import ALL_ROLES, DEV_ROLES, EVENT_LABELS, STATUS_LABELS
-from export_results import export_trajectory, export_comparison, save_review
-from plots import physical_figure, heatmap_figure, snapshot_figure, spatial_figure, comparison_figure, title
-from project_paths import OUTPUT_ROOT
+from temp_scripts.data_access import ALL_ROLES, DEV_ROLES, EVENT_LABELS, STATUS_LABELS
+from temp_scripts.export_results import export_trajectory, export_comparison, save_review
+from temp_scripts.plots import physical_figure, heatmap_figure, snapshot_figure, spatial_figure, comparison_figure, title
+from temp_scripts.project_paths import OUTPUT_ROOT
 
 TABS = ["物理状态与事件", "激活与动作热图", "当前步完整向量", "手—物体空间关系", "成功/失败轨迹对照", "来源、字段与规则"]
 ANCHORS = {"轨迹起点": "start", "首次任一组接触": "first_any_contact", "首次明显开启": "first_clear_opening",

@@ -8,13 +8,13 @@ import unittest
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from project_paths import bootstrap, PROJECT_ROOT, OUTPUT_ROOT, default_index
+from temp_scripts.project_paths import bootstrap, PROJECT_ROOT, OUTPUT_ROOT, default_index
 bootstrap()
 import numpy as np
 import torch
-from actor_model import load_actor, HookRecorder, parameter_fingerprint, replay
-from actor_verification import ACTOR_HOME, COMPARISONS, compare_values, verify_actor, load_replayed
-from data_access import DataRepository
+from temp_scripts.actor_model import load_actor, HookRecorder, parameter_fingerprint, replay
+from temp_scripts.actor_verification import ACTOR_HOME, COMPARISONS, compare_values, verify_actor, load_replayed
+from temp_scripts.data_access import DataRepository
 
 
 class ActorVerificationTests(unittest.TestCase):
@@ -40,7 +40,7 @@ class ActorVerificationTests(unittest.TestCase):
     def test_missing_parameter_never_silently_randomly_initialized(self):
         state = dict(self.actor.state_dict())
         del state["action_net.bias"]
-        with patch("actor_model.torch.load", return_value=state):
+        with patch("temp_scripts.actor_model.torch.load", return_value=state):
             with self.assertRaisesRegex(ValueError, "actor"):
                 load_actor(self.checkpoint, self.sha)
 

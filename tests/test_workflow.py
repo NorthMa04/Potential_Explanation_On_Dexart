@@ -2,21 +2,22 @@
 import sys
 sys.dont_write_bytecode = True
 from dataclasses import replace
+from datetime import datetime
 import json
 from pathlib import Path
 import unittest
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from project_paths import bootstrap, default_index, OUTPUT_ROOT, output_path
+from temp_scripts.project_paths import bootstrap, default_index, OUTPUT_ROOT, output_path
 bootstrap()
 import matplotlib
 matplotlib.use("Agg")
 import numpy as np
 from matplotlib.figure import Figure
-from data_access import DataRepository, DEV_ROLES
-from export_results import export_trajectory, save_review
-from plots import configure_style, comparison_figure, snapshot_figure
+from temp_scripts.data_access import DataRepository, DEV_ROLES
+from temp_scripts.export_results import export_trajectory, save_review
+from temp_scripts.plots import configure_style, comparison_figure, snapshot_figure
 
 
 class WorkflowTests(unittest.TestCase):
@@ -90,11 +91,11 @@ class WorkflowTests(unittest.TestCase):
             self.assertEqual(len(d["actions"]), 5)
 
     def test_review_is_separate_from_automatic_labels(self):
-        area = self.test_root / "review_save_test"
+        area = self.test_root / ("review_save_test_" + datetime.now().strftime("%Y%m%d_%H%M%S_%f"))
         area.mkdir(exist_ok=True)
         event = self.a.events[0]
         before = dict(event)
-        with patch("export_results.OUTPUT_ROOT", area):
+        with patch("temp_scripts.export_results.OUTPUT_ROOT", area):
             path = save_review(area, self.a, event, "不确定", "automated QA, not a human annotation")
         self.assertEqual(event, before)
         records = json.loads(path.read_text(encoding="utf-8"))

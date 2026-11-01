@@ -1,6 +1,6 @@
 # 步骤3：冻结 Actor 的逐段前向复现
 
-直接运行项目根目录的 **verify_actor_forward.py**。在 Visual Studio 中选择这个文件运行即可，继续使用 MachineLearning 环境；无需启动原来的轨迹窗口、服务器、SAPIEN 或旧版 Stable-Baselines3。
+直接运行项目根目录的 **3_verify_actor_forward.py**。在 Visual Studio 中选择这个文件运行即可，继续使用 MachineLearning 环境；无需启动原来的轨迹窗口、服务器、SAPIEN 或旧版 Stable-Baselines3。
 
 默认程序先完成数值校验、导出报告和图表，然后打开原生结果窗口。计算期间控制台每完成25条轨迹会显示进度。只想查看上次结果时，使用 `--view-only`，不用重复计算。
 
@@ -51,12 +51,12 @@ abs(replayed - reference) <= 1e-5 + 1e-4 * abs(reference)
 
 ```bat
 conda activate MachineLearning
-python verify_actor_forward.py
-python verify_actor_forward.py --view-only
-python verify_actor_forward.py --no-gui
-python verify_actor_forward.py --trajectory-id object_9996__episode_00004 --no-gui
-python verify_actor_forward.py --checkpoint "D:\其他目录\laptop_nopretrain_0.zip"
-python verify_actor_forward.py --device cuda --no-gui
+python 3_verify_actor_forward.py
+python 3_verify_actor_forward.py --view-only
+python 3_verify_actor_forward.py --no-gui
+python 3_verify_actor_forward.py --trajectory-id object_9996__episode_00004 --no-gui
+python 3_verify_actor_forward.py --checkpoint "D:\其他目录\laptop_nopretrain_0.zip"
+python 3_verify_actor_forward.py --device cuda --no-gui
 ```
 
 默认用CPU、1个线程、批大小256，降低小网络多线程开销。`--device cuda` 是可选项；如果CUDA不可用会明确报错，不暗中切换设备。跨设备结果应保留不同运行记录，不能为了通过而反复改变阈值。`--atol` / `--rtol` 可显式设置，但每次运行都会记录。

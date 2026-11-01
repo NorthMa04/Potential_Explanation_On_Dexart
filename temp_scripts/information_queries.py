@@ -9,11 +9,11 @@ from pathlib import Path
 import re
 import sqlite3
 
-from project_paths import bootstrap, output_path
+from temp_scripts.project_paths import bootstrap, output_path
 bootstrap()
 
-from data_access import ALL_ROLES, EVENT_LABELS
-from information_table import TABLE_HOME, dump, latest_database
+from temp_scripts.data_access import ALL_ROLES, EVENT_LABELS
+from temp_scripts.information_table import TABLE_HOME, dump, latest_database
 
 
 def query(database, *, trajectory_id=None, state_index=None, object_id=None, split="development", neuron=None,
