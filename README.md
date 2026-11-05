@@ -1,5 +1,9 @@
 # DexArt 激活、纯SAE与解释实验工程
 
+## 2026-11-05资产整理与暂停
+
+当前按用户要求暂缓研究，只整理代码与数据。见[资产规范与维护入口](STEP2_ASSET_CATALOG.md)及[资产目录](outputs/asset_catalog/README.md)。根编号入口、`temp_scripts/`公共实现、`tests/`测试和`outputs/`生成物的既定规则继续沿用；原数据与冻结结果保留原位。下面的研究接续建议保留，等待用户恢复推进。
+
 ## 2026-11-05最新接续入口
 
 先读[11月5日主交接](../../项目交接文档_具身策略决策解释_2026-11-05.md)和[整体思路与下一步流程](../../research/embodied_sae/INTERPRETABILITY_CHAIN_AND_NEXT_STEPS_2026-11-05.md)。在线补充实验、冻结读出/时序/组分析、[7起点持续接触协调](outputs/contact_coordination_20261105/CONTACT_COORDINATION_2026-11-05.md)、[近似快照匹配](outputs/snapshot_matching_20261105/SNAPSHOT_RESULTS_2026-11-05.md)及[单状态动作反查](outputs/action_backtrace_20261105/ACTION_BACKTRACE_2026-11-05.md)已有保存结果。下一窗口先以这些病例对齐关键窗口的表示—命令—物理过程，形成可检验预测；新受控快照、候选参考替换、闭环及动作路径恢复尚未完成。SAE有用性不要求胜过Ridge，未证明独立贴掌/开盖模块。服务器最后记录为平台关机，本次仅更新文档，接手不必重训或启动服务器。
@@ -28,6 +32,7 @@
 | --- | --- | --- |
 | 1 | `1_review_trajectories.py` | 读取、校验、物理事件和连续轨迹窗口审阅 |
 | 2 | `2_build_information_table.py` / `2_query_information_table.py` | 构建及查询逐状态总表 |
+| 2（维护） | `2_catalog_project_assets.py` | 只读登记代码、数据、原标签与报告，生成新的维护清单 |
 | 3 | `3_verify_actor_forward.py` | 冻结actor后半网络的前向复现 |
 | 4 | `4_run_activation_baseline.py` | 首次持续开启窗口的原始激活状态探针与对照 |
 | 5 | `5_run_pure_sae.py` | 纯TopK SAE训练、冻结actor动作保持、新状态探针及结果窗口 |
@@ -37,6 +42,7 @@
 | 9 | `9_export_physical_bundle.py --out <新目录>` | 导出冻结数值模型并核验；P4使用`temp_scripts/physical_campaign.py`运行独立前缀匹配的局部替换试验 |
 | 10 | `10_prepare_constrained_interventions.py --out <新目录>` | 开发集定义/审计受约束开启量方向及投影后匹配对照；P4的`feature_campaign.py`执行有界物理pilot，见[步骤10](STEP10_CONSTRAINED_FEATURES.md) |
 | 13 | `13_run_combined_offline.py --run <运行目录>` | 本地全量 train/validation 固定输入组合测试，逐状态编辑、冻结探针及动作比较，见[组合实验](STEP11_COMBINED_PHYSICAL.md) |
+| 14 | `14_run_local_interpretability.py` | 已有本地解释分析入口；当前只读取已保存结果，不自动重跑 |
 
 编号用于可独立运行的实验入口；全部未编号公共模块集中在 `temp_scripts/`，通过 `temp_scripts.data_access` 等包路径导入。该目录是正式运行依赖，不是可删除的临时文件。采集脚本、源数据和历史结果快照保留原名。Visual Studio中按所需步骤设置启动文件；默认仍打开步骤1。
 
