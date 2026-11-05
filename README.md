@@ -1,6 +1,26 @@
-# DexArt 轨迹读取与可视化审阅
+# DexArt 激活、纯SAE与解释实验工程
 
-本项目包含轨迹审阅、总表、冻结 Actor 前向复现，以及可由用户运行的原始激活 baseline。原策略保持冻结。
+## 2026-11-05最新接续入口
+
+先读[11月5日主交接](../../项目交接文档_具身策略决策解释_2026-11-05.md)和[整体思路与下一步流程](../../research/embodied_sae/INTERPRETABILITY_CHAIN_AND_NEXT_STEPS_2026-11-05.md)。在线补充实验、冻结读出/时序/组分析、[7起点持续接触协调](outputs/contact_coordination_20261105/CONTACT_COORDINATION_2026-11-05.md)、[近似快照匹配](outputs/snapshot_matching_20261105/SNAPSHOT_RESULTS_2026-11-05.md)及[单状态动作反查](outputs/action_backtrace_20261105/ACTION_BACKTRACE_2026-11-05.md)已有保存结果。下一窗口先以这些病例对齐关键窗口的表示—命令—物理过程，形成可检验预测；新受控快照、候选参考替换、闭环及动作路径恢复尚未完成。SAE有用性不要求胜过Ridge，未证明独立贴掌/开盖模块。服务器最后记录为平台关机，本次仅更新文档，接手不必重训或启动服务器。
+
+## 2026-11-04历史接续记录
+
+先读[11月4日主交接](../../项目交接文档_具身策略决策解释_2026-11-04.md)、[本轮最终报告](outputs/local_interpretability/20261104_mainline_v3/LOCAL_RESULTS_2026-11-04.md)及[步骤14](STEP14_LOCAL_INTERPRETABILITY.md)。入口`14_run_local_interpretability.py`和3个公共模块已完成本地信息/编辑/机制分析与独立核验；已有结果可读取，接手不必重跑。重要修正：119条历史物理失败均曾达到目标进度且近距离，但未同时满足严格接触，不能解释为打不开盖子。新的物理增强、自然失败救援与新起点评价仍待开展。下方为历史阶段记录。
+
+## 2026-11-03历史运行状态
+
+组合物理扩展7216条已全部完成，8起点各902条，运行报错0。用户本地步骤13已完成1365状态与409500变体。完整回传、校验及服务器关闭状态见[最新交接](../../项目交接文档_具身策略决策解释_2026-11-03.md)。下文保留各阶段历史记录。
+
+本项目包含轨迹审阅、总表、冻结actor前向复现、原始基线、纯/状态辅助SAE、独立评价及离线动作干预。原策略保持冻结。下一窗口先读[最新主交接](../../项目交接文档_具身策略决策解释_2026-11-05.md)。下方涉及“尚未开展”的旧状态按对应日期理解，当前进度以上方最新入口为准。
+
+2026-11-02完成75配置×3种子的225次训练；冻结7配置/21模型后完成三类独立测试，新增时间控制和监督Ridge旋转强参照，完成58,110个固定输入干预/匹配对照变体。最终89项回归通过。见[完整报告](outputs/state_assisted/20261102_122123_738477/FINAL_REPORT_2026-11-02.md)及[步骤7方法](STEP7_STATE_ASSISTED_SAE.md)。受限辅助头有集中收益，相对强监督旋转的额外证据主要在开启量；没有SAE物理运动/成功率结论，不需要重跑225次训练。
+
+随后按用户授权从原CPU模式实例复制到P4，基础CUDA/EGL离屏渲染及原策略32步开盖试运行均通过，原数据341文件SHA256一致，见[迁移记录](../../research/embodied_sae/SERVER_CHECK_AND_MIGRATION_2026-11-02.md)。最新辅助SAE尚未部署；接入前需跨Python/PyTorch版本数值导出/前向核验，特征干预还需处理合法域约束。
+
+用户随后授权开始物理仿真并明确批准上传模型包。步骤9已导出并在P4的CPU/CUDA核验6个纯/辅助SAE及冻结Top4探针；初始scene.pack/unpack续跑重复门限失败，因此改为每条件独立新进程重放完整前缀并逐值核对。首批104条完整轨迹（4自然+4独立重复+96局部替换）全部完成并独立审计通过，原策略4/4与替换96/96均成功，没有成功率提升证据；见[物理报告](outputs/physical_simulation/20261102_pilot_v1/PHYSICAL_REPORT_2026-11-02.md)和[步骤9](STEP9_PHYSICAL_SIMULATION.md)。
+
+随后用户授权全权推进，步骤10完成330条受约束开启量Top1物理轨迹并独立审计：8预设起点中7触发，315方向编辑/匹配对照均非负、范数匹配；原策略4/8成功，全部条件成败与各自基线相同。目标减随机均值的5步开启差约+0.255度（抑制）/−0.038度（增强），跨种子符号不一致，没有稳定语义因果证据。[步骤10](STEP10_CONSTRAINED_FEATURES.md)及[完整特征干预报告](outputs/constrained_physical/20261102_opening_v1/FEATURE_REPORT_2026-11-02.md)包含代码、原始证据和补充恢复诊断。
 
 ## 按流程选择入口
 
@@ -11,10 +31,20 @@
 | 3 | `3_verify_actor_forward.py` | 冻结actor后半网络的前向复现 |
 | 4 | `4_run_activation_baseline.py` | 首次持续开启窗口的原始激活状态探针与对照 |
 | 5 | `5_run_pure_sae.py` | 纯TopK SAE训练、冻结actor动作保持、新状态探针及结果窗口 |
+| 6 | `6_compare_sae_results.py --runs <运行目录...>` | 跨运行/配置/种子汇总，重复运行核对与PCA动作保持对照 |
+| 7 | `7_run_state_assisted_sae.py` | 分阶段辅助实验、复看汇总和检查点独立核验 |
+| 8 | `8_evaluate_frozen_sae.py --study-dir <目录>` | 按冻结清单独立前向评价，可选离线动作干预；没有仿真 |
+| 9 | `9_export_physical_bundle.py --out <新目录>` | 导出冻结数值模型并核验；P4使用`temp_scripts/physical_campaign.py`运行独立前缀匹配的局部替换试验 |
+| 10 | `10_prepare_constrained_interventions.py --out <新目录>` | 开发集定义/审计受约束开启量方向及投影后匹配对照；P4的`feature_campaign.py`执行有界物理pilot，见[步骤10](STEP10_CONSTRAINED_FEATURES.md) |
+| 13 | `13_run_combined_offline.py --run <运行目录>` | 本地全量 train/validation 固定输入组合测试，逐状态编辑、冻结探针及动作比较，见[组合实验](STEP11_COMBINED_PHYSICAL.md) |
 
 编号用于可独立运行的实验入口；全部未编号公共模块集中在 `temp_scripts/`，通过 `temp_scripts.data_access` 等包路径导入。该目录是正式运行依赖，不是可删除的临时文件。采集脚本、源数据和历史结果快照保留原名。Visual Studio中按所需步骤设置启动文件；默认仍打开步骤1。
 
-步骤5供用户亲自试运行，默认`64→128→64 / TopK=8 / seed=0`，只用当前首次持续开启窗口的train/validation。原actor冻结，状态和动作只作后续评价，不进入纯SAE训练损失。详细配置和产物说明见[步骤5](STEP5_PURE_SAE.md)。在Visual Studio中选`5_run_pure_sae.py`作为启动文件；运行结束打开结果窗口，`--view-only`复看，所有结果保存在`outputs/pure_sae/`。代码和合成验证不代表正式SAE实验已完成。
+本次组合实验的本地运行入口为步骤13。准备冻结包和物理结果审计工具分别位于 `temp_scripts/prepare_combined_interventions.py` 和 `temp_scripts/analyze_combined_physical.py`。
+
+步骤5默认`64→128→64 / TopK=8 / seed=0`，该默认值保留为历史起点，只用当前首次持续开启窗口的train/validation。原actor冻结，状态和动作只作后续评价，不进入纯SAE训练损失。详细配置和产物说明见[步骤5](STEP5_PURE_SAE.md)。在Visual Studio中选`5_run_pure_sae.py`作为启动文件；运行结束打开结果窗口，`--view-only`复看，所有结果保存在`outputs/pure_sae/`。正式开发集结果已经生成，无需为接手再训练。
+
+2026-11-01已在用户授权下完成12配置×3种子的36次正式开发集训练，包含全局缩放对照、训练预算/学习率及K24/K32扩展。[参数探索与候选复看](outputs/sae_study_20261101/README.md)提供完整证据与命令。默认参数保留为历史起点，未自动替换为某个“最优”配置；三个独立测试划分尚未评价。
 
 步骤4使用现有MachineLearning环境，默认取首次持续开启窗口内的**全部步骤**，只使用train/validation，运行完成后打开结果窗口。详见[完整运行与方法说明](STEP4_ACTIVATION_BASELINE.md)。
 
@@ -24,7 +54,7 @@ python 4_run_activation_baseline.py
 python 4_run_activation_baseline.py --view-only
 ```
 
-第一条只检查窗口，不拟合；第二条拟合baseline；第三条复看上次结果。结果统一放在`outputs/activation_baseline/`。代码交付和自动化检查不代表正式探针实验已完成。
+第一条只检查窗口，不拟合；第二条拟合baseline；第三条复看上次结果。结果统一放在`outputs/activation_baseline/`。步骤4实际拟合已完成，固定结果为`20261030_163827_787919`；接手优先复看，不为验证文档而重训。
 
 已经生成 [首批图形核对与示例入口](outputs/examples/INITIAL_REVIEW.md)，包含实际成功/失败轨迹图和完整数值导出。
 

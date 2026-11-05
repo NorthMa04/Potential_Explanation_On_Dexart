@@ -16,6 +16,7 @@ class SAEConfig:
     max_epochs: int = 500
     patience: int = 50
     scale_floor: float = 1e-6
+    preprocessing: str = "coordinate"
 
     def validate(self):
         for name in ("width", "top_k", "batch_size", "max_epochs", "patience"):
@@ -24,6 +25,8 @@ class SAEConfig:
                 raise ValueError(name + " must be a positive integer")
         if self.top_k > self.width:
             raise ValueError("top_k cannot exceed dictionary width")
+        if self.preprocessing not in ("coordinate", "global"):
+            raise ValueError("preprocessing must be coordinate or global")
         for name in ("learning_rate", "scale_floor"):
             if not math.isfinite(getattr(self, name)) or getattr(self, name) <= 0:
                 raise ValueError(name + " must be finite and positive")
@@ -37,7 +40,7 @@ class ActivationStandardizer:
     small_variance: np.ndarray
 
     @classmethod
-    def fit(cls, training_activations, weights, floor=1e-6):
+    def fit(cls, training_activations, weights, floor=1e-6, mode="coordinate"):
         x, w = np.asarray(training_activations, dtype=float), np.asarray(weights, dtype=float)
         if x.ndim != 2 or len(x) == 0 or w.shape != (len(x),):
             raise ValueError("Preprocessing requires nonempty training rows and matching weights")
@@ -48,6 +51,12 @@ class ActivationStandardizer:
         mean = np.average(x, axis=0, weights=w)
         std = np.sqrt(np.average((x - mean) ** 2, axis=0, weights=w))
         small = std < floor
+        if mode == "global":
+            # A single scale preserves distances/directions in raw activation space.
+            global_std = float(np.sqrt(np.mean(std ** 2)))
+            return cls(mean, np.full(x.shape[1], global_std if global_std >= floor else 1.), small)
+        if mode != "coordinate":
+            raise ValueError("Unknown preprocessing mode")
         # Constant / nearly constant coordinates remain present, without amplification.
         return cls(mean, np.where(small, 1.0, std), small)
 

@@ -1,5 +1,7 @@
 # 步骤5：纯 TopK SAE 试运行
 
+当前状态：用户初始试运行及后续12配置×3种子的纯SAE开发集训练已完成，见[探索汇报](outputs/sae_study_20261101/README.md)。没有全面语义集中优势，动作保持改善不能替代解释成功。下一项是[状态辅助SAE最小配对方案](../../research/embodied_sae/STATE_ASSISTED_SAE_PLAN_2026-11-01.md)，目前尚未实现；本文仅说明已有纯SAE入口，不把状态辅助权重写成可用参数。主交接见[新版](../../项目交接文档_具身策略决策解释_2026-11-01.md)。
+
 编号入口为 `5_run_pure_sae.py`，公共模块为 `temp_scripts/sae_model.py`、`sae_training.py`、`sae_plots.py`、`sae_viewer.py`。沿用步骤1—4的命名和目录规则；所有新模型、日志、缓存、代码快照和分析结果均写入本项目 `outputs/`，源数据只读。
 
 ## 由用户启动
@@ -51,6 +53,8 @@ python -B 5_run_pure_sae.py --skip-probes
 | 种子 | 默认0；支持显式0/1/2，各自报告，不挑最好种子作主结论 |
 
 参数均可通过 `--help` 查看。`--compare-configs` 固定为(128,8)/(128,4)/(128,16)/(256,8)，替代`--width`和`--top-k`；其余训练参数保持相同。每次新建运行目录，不覆盖历史。失败、手动中断、prepare-only和quick-check不会替换最近正式成功结果；检查点和定期训练历史留在当前运行目录。
+
+新增预处理对照：`--preprocessing global`在train均值中心化后，仅使用一个全局RMS标准差；默认`coordinate`仍保持逐维标准化。两者均保存完整逆变换。不同预处理的标准化MSE不直接比较，主要看原尺度NMSE、动作误差和相同新状态探针。
 
 ## 冻结 actor 与动作误差
 

@@ -53,7 +53,7 @@ def fit_sae(activations, splits, groups, config, seed, folder, *, weighting="tra
         raise ValueError("SAE fitting needs train and validation, with no test rows")
     weights = sample_weights(groups[train], weighting)
     validation_weights = sample_weights(groups[validation], "trajectory")
-    standardizer = ActivationStandardizer.fit(activations[train], weights, config.scale_floor)
+    standardizer = ActivationStandardizer.fit(activations[train], weights, config.scale_floor, config.preprocessing)
     normalized = standardizer.transform(activations)
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
@@ -352,7 +352,7 @@ def run_sae(repo, checkpoint, *, configurations=None, seeds=(0,), layer="h1", ev
         "sparsity": "TopK followed by ReLU; at most K positive entries per sample; no L1",
         "state_loss_weight": 0., "action_loss_weight": 0., "weight_decay": 0.,
         "decoder": "linear, learnable bias, unit-norm columns; projected gradients",
-        "preprocessing": "train-only weighted coordinate mean/std; std below scale_floor replaced by 1; invert before actor",
+        "preprocessing": "train-only weighted coordinate mean with coordinate std or one global RMS std; invert before actor; mode saved per configuration",
         "checkpoint_selection": "minimum validation trajectory-weighted standardized MSE, including initialization",
         "actor_replay_tolerance": {"atol": 1e-5, "rtol": 1e-4},
         "test_evaluation": False, "physical_simulation": False,

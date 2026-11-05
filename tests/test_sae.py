@@ -90,6 +90,19 @@ class SAETests(unittest.TestCase):
             run_sae(self.repo, self.checkpoint, configurations=[SAEConfig(top_k=129)], destination=destination)
         self.assertFalse(destination.exists())
 
+    def test_global_scaling_preserves_geometry_and_old_checkpoint_transform(self):
+        x = np.array([[0., 0., 1.], [2., 20., 1.], [4., 40., 1.]])
+        weights = np.ones(3)
+        transform = ActivationStandardizer.fit(x, weights, mode="global")
+        self.assertTrue(np.all(transform.scale == transform.scale[0]))
+        np.testing.assert_allclose(transform.inverse_transform(transform.transform(x)), x, atol=1e-5)
+        delta = transform.transform(x)[1] - transform.transform(x)[0]
+        self.assertAlmostEqual(float(delta[1] / delta[0]), 10., places=5)
+        restored = ActivationStandardizer.from_state_dict(transform.state_dict())
+        np.testing.assert_array_equal(restored.scale, transform.scale)
+        with self.assertRaises(ValueError):
+            SAEConfig(preprocessing="unknown").validate()
+
     def test_fit_restores_best_checkpoint_has_unit_dictionary_and_deterministic_reload(self):
         folder = self.area / "fit"
         folder.mkdir()
@@ -141,7 +154,7 @@ class SAETests(unittest.TestCase):
         before_pointer = pointer.read_bytes() if pointer.exists() else None
         fingerprint = parameter_fingerprint(self.actor)
         folder, summary = run_sae(self.repo, self.checkpoint, configurations=[SAEConfig(width=16, top_k=4,
-                   max_epochs=3, patience=2)], destination=self.area / "end_to_end", quick=True,
+                   max_epochs=3, patience=2)], destination=self.area / "end_to_end", quick=False,
                    publish=False, progress=lambda s: None)
         self.assertEqual(summary["status"], "development_run_completed")
         self.assertEqual(summary["test_numeric_archives_loaded"], 0)
@@ -157,6 +170,18 @@ class SAETests(unittest.TestCase):
         self.assertIn("any_contact__z_top4__seed0", probes["models"])
         self.assertIn("distance_m__h1_top4__seed0", probes["models"])
         self.assertFalse(json.loads((folder / "provenance.json").read_text(encoding="utf-8"))["labels_used_for_sae_optimization"])
+        from temp_scripts.sae_comparison import compare_runs
+        comparison, aggregates = compare_runs([folder, folder], destination=self.area / "comparison")
+        self.assertEqual(len(aggregates), 1)
+        self.assertEqual(aggregates[0]["seed_count"], 1)
+        self.assertEqual(aggregates[0]["validation_action_clipped_mae_mean"], next(r["mae"] for r in result["fidelity"]
+            if r["split"] == "validation" and r["weighting"] == "trajectory" and r["quantity"] == "action_clipped"))
+        sources = json.loads((comparison / "sources.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(sources["duplicate_checks"]), 1)
+        from temp_scripts.sae_controls import pca_fidelity_controls
+        controls = pca_fidelity_controls(folder, comparison, ranks=(4,))
+        self.assertEqual(len(controls), 2)
+        self.assertTrue(all(r["validation_action_clipped_mae"] >= 0 for r in controls))
         root = tk.Tk()
         root.withdraw()
         try:

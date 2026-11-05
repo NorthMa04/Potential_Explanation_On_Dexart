@@ -23,6 +23,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="1_review_trajectories.py" />
+    <Compile Include="temp_scripts\prepare_combined_interventions.py" />
+    <Compile Include="temp_scripts\analyze_combined_physical.py" />
+    <Compile Include="13_run_combined_offline.py" />
+    <Compile Include="temp_scripts\combined_intervention.py" />
+    <Compile Include="temp_scripts\combined_campaign.py" />
+    <Compile Include="temp_scripts\run_combined_parallel.py" />
+    <Compile Include="temp_scripts\switch_combined_parallel.py" />
+    <Compile Include="temp_scripts\combined_analysis.py" />
+    <Compile Include="tests\test_combined_intervention.py" />
     <Compile Include="temp_scripts\__init__.py" />
     <Compile Include="temp_scripts\project_paths.py" />
     <Compile Include="temp_scripts\data_access.py" />
@@ -49,6 +58,42 @@
     <Compile Include="temp_scripts\sae_plots.py" />
     <Compile Include="temp_scripts\sae_viewer.py" />
     <Compile Include="tests\test_sae.py" />
+    <Compile Include="6_compare_sae_results.py" />
+    <Compile Include="temp_scripts\sae_comparison.py" />
+    <Compile Include="temp_scripts\sae_controls.py" />
+    <Compile Include="temp_scripts\sae_comparison_plots.py" />
+    <Compile Include="7_run_state_assisted_sae.py" />
+    <Compile Include="8_evaluate_frozen_sae.py" />
+    <Compile Include="9_export_physical_bundle.py" />
+    <Compile Include="temp_scripts\physical_runtime.py" />
+    <Compile Include="temp_scripts\physical_simulation.py" />
+    <Compile Include="temp_scripts\physical_campaign.py" />
+    <Compile Include="temp_scripts\physical_analysis.py" />
+    <Compile Include="10_prepare_constrained_interventions.py" />
+    <Compile Include="temp_scripts\constrained_intervention.py" />
+    <Compile Include="temp_scripts\verify_constrained_bundle.py" />
+    <Compile Include="temp_scripts\feature_campaign.py" />
+    <Compile Include="temp_scripts\feature_analysis.py" />
+    <Compile Include="temp_scripts\feature_group_audit.py" />
+    <Compile Include="temp_scripts\rescue_feasibility.py" />
+    <Compile Include="temp_scripts\rescue_direction_comparison.py" />
+    <Compile Include="temp_scripts\rescue_comparison_analysis.py" />
+    <Compile Include="tests\test_constrained_intervention.py" />
+    <Compile Include="tests\test_feature_analysis.py" />
+    <Compile Include="temp_scripts\state_assisted_model.py" />
+    <Compile Include="temp_scripts\state_assisted_study.py" />
+    <Compile Include="temp_scripts\state_assisted_analysis.py" />
+    <Compile Include="temp_scripts\state_assisted_final_analysis.py" />
+    <Compile Include="temp_scripts\state_assisted_semantics.py" />
+    <Compile Include="temp_scripts\state_assisted_controls.py" />
+    <Compile Include="temp_scripts\state_assisted_holdout.py" />
+    <Compile Include="temp_scripts\state_assisted_intervention.py" />
+    <Compile Include="tests\test_state_assisted.py" />
+    <Compile Include="tests\test_state_assisted_labels.py" />
+    <Compile Include="tests\test_state_assisted_heads.py" />
+    <Compile Include="tests\test_state_assisted_holdout.py" />
+    <Compile Include="tests\test_state_assisted_intervention.py" />
+    <Compile Include="tests\test_state_assisted_semantics.py" />
     <Compile Include="tests\test_actor_verification.py" />
     <Compile Include="tests\test_information_table.py" />
     <Compile Include="tests\test_workflow.py" />
@@ -57,6 +102,10 @@
     <Content Include="STEP3_ACTOR_VERIFICATION.md" />
     <Content Include="STEP4_ACTIVATION_BASELINE.md" />
     <Content Include="STEP5_PURE_SAE.md" />
+    <Content Include="STEP7_STATE_ASSISTED_SAE.md" />
+    <Content Include="STEP9_PHYSICAL_SIMULATION.md" />
+    <Content Include="STEP10_CONSTRAINED_FEATURES.md" />
+    <Content Include="STEP11_COMBINED_PHYSICAL.md" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="CondaEnv|CondaEnv|MachineLearning" />

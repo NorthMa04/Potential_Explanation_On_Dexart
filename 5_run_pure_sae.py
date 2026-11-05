@@ -25,6 +25,7 @@ def build_parser():
     parser.add_argument("--max-epochs", type=int, default=500)
     parser.add_argument("--patience", type=int, default=50, help="验证MSE连续多少轮未创新低后停止")
     parser.add_argument("--scale-floor", type=float, default=1e-6)
+    parser.add_argument("--preprocessing", choices=["coordinate", "global"], default="coordinate", help="逐维标准化或均值中心化后用一个全局尺度；默认保持原方案")
     parser.add_argument("--seeds", nargs="+", type=int, default=[0])
     parser.add_argument("--compare-configs", action="store_true", help="依次比较(128,8)/(128,4)/(128,16)/(256,8)；替代width/top-k")
     parser.add_argument("--weighting", choices=["trajectory", "frame"], default="trajectory")
@@ -44,7 +45,7 @@ def main():
     from temp_scripts.sae_model import SAEConfig
     try:
         config = SAEConfig(args.width, args.top_k, args.learning_rate, args.batch_size,
-                           args.max_epochs, args.patience, args.scale_floor).validate()
+                           args.max_epochs, args.patience, args.scale_floor, args.preprocessing).validate()
         if args.threads < 1 or args.window_radius < 0:
             raise ValueError("线程数必须为正，窗口半径不能为负")
         if len(set(args.seeds)) != len(args.seeds) or any(s < 0 for s in args.seeds):
